@@ -1,0 +1,38 @@
+# Slack app manifest. api.slack.com/apps → Create New App → From an app manifest →
+# pick your workspace → paste this, after replacing YOUR-APP.vercel.app with your URL.
+display_information:
+  name: Halden Analyst
+  description: AI analyst team for the Halden Nutrition portfolio project (synthetic data)
+  background_color: "#1f4d3a"
+features:
+  bot_user:
+    display_name: analyst
+    always_online: true
+  app_home:
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+  slash_commands:
+    - command: /analyst
+      url: https://YOUR-APP.vercel.app/api/slack/command
+      description: Ask the analyst agents a question about the store data
+      usage_hint: why did conversion fall in the last 4 weeks?
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - app_mentions:read
+      - chat:write
+      - commands
+      - im:history
+settings:
+  event_subscriptions:
+    request_url: https://YOUR-APP.vercel.app/api/slack/events
+    bot_events:
+      - app_mention
+      - message.im
+  interactivity:
+    is_enabled: true
+    request_url: https://YOUR-APP.vercel.app/api/slack/interact
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

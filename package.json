@@ -1,0 +1,33 @@
+{
+  "name": "funnel-intelligence",
+  "version": "1.0.0",
+  "scripts": {
+    "seed": "node scripts/seed.mjs",
+    "dev": "next dev -p 4700",
+    "build": "node scripts/seed.mjs --check && next build",
+    "start": "next start -p 4700",
+    "check": "node scripts/seed.mjs --check",
+    "load:neon": "node scripts/load-neon.mjs",
+    "eval": "node scripts/eval.mjs"
+  },
+  "description": "Growth & Funnel Intelligence - product analytics portfolio project",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.1",
+    "mixpanel-browser": "^2.86.0",
+    "next": "^16.4.6",
+    "posthog-js": "^1.454.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.6.0",
+    "@types/mixpanel-browser": "^2.60.0",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "typescript": "^5.9.3"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20.10"
+  }
+}

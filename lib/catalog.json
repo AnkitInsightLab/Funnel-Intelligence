@@ -1,0 +1,205 @@
+{
+  "brand": "Halden Nutrition",
+  "categories": [
+    {
+      "id": "whey",
+      "name": "Whey Protein"
+    },
+    {
+      "id": "mass_gainer",
+      "name": "Mass Gainer"
+    },
+    {
+      "id": "creatine",
+      "name": "Creatine"
+    },
+    {
+      "id": "vitamins",
+      "name": "Vitamins & Wellness"
+    },
+    {
+      "id": "pre_workout",
+      "name": "Pre-Workout"
+    },
+    {
+      "id": "peanut_butter",
+      "name": "Peanut Butter"
+    }
+  ],
+  "products": [
+    {
+      "id": "HW-1KG-CHOC",
+      "slug": "whey-protein-chocolate-1kg",
+      "name": "Everyday Whey, Chocolate, 1 kg",
+      "category": "whey",
+      "price": 2199,
+      "mrp": 2799,
+      "weightKg": 1,
+      "color": "#6b4b3e",
+      "protein": "24 g per scoop",
+      "rating": 4.4,
+      "reviews": 2311,
+      "cycleDays": 30
+    },
+    {
+      "id": "HW-2KG-CHOC",
+      "slug": "whey-protein-chocolate-2kg",
+      "name": "Everyday Whey, Chocolate, 2 kg",
+      "category": "whey",
+      "price": 3999,
+      "mrp": 5299,
+      "weightKg": 2,
+      "color": "#6b4b3e",
+      "protein": "24 g per scoop",
+      "rating": 4.4,
+      "reviews": 1877,
+      "cycleDays": 55
+    },
+    {
+      "id": "HW-ISO-1KG",
+      "slug": "whey-isolate-unflavoured-1kg",
+      "name": "Isolate Pro, Unflavoured, 1 kg",
+      "category": "whey",
+      "price": 3299,
+      "mrp": 3999,
+      "weightKg": 1,
+      "color": "#cfc6b3",
+      "protein": "27 g per scoop",
+      "rating": 4.6,
+      "reviews": 904,
+      "cycleDays": 32
+    },
+    {
+      "id": "MG-3KG-CHOC",
+      "slug": "mass-gainer-chocolate-3kg",
+      "name": "Lean Mass Gainer, Chocolate, 3 kg",
+      "category": "mass_gainer",
+      "price": 2799,
+      "mrp": 3499,
+      "weightKg": 3,
+      "color": "#8a5a2b",
+      "protein": "30 g per serving",
+      "rating": 4.2,
+      "reviews": 1288,
+      "cycleDays": 24
+    },
+    {
+      "id": "MG-5KG-BAN",
+      "slug": "mass-gainer-banana-5kg",
+      "name": "Lean Mass Gainer, Banana, 5 kg",
+      "category": "mass_gainer",
+      "price": 3999,
+      "mrp": 4999,
+      "weightKg": 5,
+      "color": "#d9b44a",
+      "protein": "30 g per serving",
+      "rating": 4.1,
+      "reviews": 641,
+      "cycleDays": 40
+    },
+    {
+      "id": "CR-250G",
+      "slug": "creatine-monohydrate-250g",
+      "name": "Creatine Monohydrate, 250 g",
+      "category": "creatine",
+      "price": 899,
+      "mrp": 1199,
+      "weightKg": 0.25,
+      "color": "#e8e6e1",
+      "protein": "3 g creatine per serving",
+      "rating": 4.7,
+      "reviews": 3120,
+      "cycleDays": 50
+    },
+    {
+      "id": "MV-60",
+      "slug": "daily-multivitamin-60-tablets",
+      "name": "Daily Multivitamin, 60 tablets",
+      "category": "vitamins",
+      "price": 549,
+      "mrp": 699,
+      "weightKg": 0.1,
+      "color": "#e36b3b",
+      "protein": "24 vitamins & minerals",
+      "rating": 4.3,
+      "reviews": 1502,
+      "cycleDays": 60
+    },
+    {
+      "id": "FO-90",
+      "slug": "omega-3-fish-oil-90-softgels",
+      "name": "Omega-3 Fish Oil, 90 softgels",
+      "category": "vitamins",
+      "price": 699,
+      "mrp": 899,
+      "weightKg": 0.12,
+      "color": "#e3a93b",
+      "protein": "1000 mg per softgel",
+      "rating": 4.4,
+      "reviews": 870,
+      "cycleDays": 90
+    },
+    {
+      "id": "AS-60",
+      "slug": "ashwagandha-ksm66-60-capsules",
+      "name": "Ashwagandha KSM-66, 60 capsules",
+      "category": "vitamins",
+      "price": 399,
+      "mrp": 549,
+      "weightKg": 0.08,
+      "color": "#4f7a4a",
+      "protein": "600 mg per capsule",
+      "rating": 4.2,
+      "reviews": 488,
+      "cycleDays": 60
+    },
+    {
+      "id": "PW-300G",
+      "slug": "pre-workout-fruit-punch-300g",
+      "name": "Ignite Pre-Workout, Fruit Punch, 300 g",
+      "category": "pre_workout",
+      "price": 1499,
+      "mrp": 1899,
+      "weightKg": 0.3,
+      "color": "#c8324b",
+      "protein": "200 mg caffeine per scoop",
+      "rating": 4.3,
+      "reviews": 712,
+      "cycleDays": 35
+    },
+    {
+      "id": "PB-1KG",
+      "slug": "peanut-butter-crunchy-1kg",
+      "name": "High Protein Peanut Butter, Crunchy, 1 kg",
+      "category": "peanut_butter",
+      "price": 449,
+      "mrp": 599,
+      "weightKg": 1,
+      "color": "#b9813f",
+      "protein": "30 g protein per 100 g",
+      "rating": 4.5,
+      "reviews": 2650,
+      "cycleDays": 21
+    }
+  ],
+  "heavyShippingFee": {
+    "minWeightKg": 3,
+    "fee": 149
+  },
+  "unitEconomics": {
+    "_note": "Assumptions for the finance view, not company data.",
+    "grossMarginPct": 52,
+    "fulfilmentPerOrder": 95,
+    "paymentFeePct": 1.8,
+    "cpc": {
+      "meta_ads": 45,
+      "google_ads": 35,
+      "influencer": 0,
+      "organic": 0,
+      "direct": 0,
+      "email": 0
+    },
+    "influencerSpendPerWeek": 25000,
+    "emailWhatsappToolPerMonth": 15000
+  }
+}

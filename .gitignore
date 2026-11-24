@@ -1,0 +1,10 @@
+node_modules
+.next
+.env*.local
+.env
+data/
+next-env.d.ts
+*.tsbuildinfo
+.vercel
+
+lib/agentdb.tar.gz

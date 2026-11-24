@@ -1,0 +1,104 @@
+{
+  "name": "Replenishment reminder (WhatsApp, 20% holdout)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "cronExpression", "expression": "30 5 * * *" }] }
+      },
+      "id": "a1f0c1d2-0001-4c00-9000-000000000001",
+      "name": "Daily 11:00 IST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Customers with 1-2 orders whose last pack runs out in 3 days and who opted in to WhatsApp.\n-- contacts(user_id, phone_e164, first_name, whatsapp_opt_in) is your consent table.\nWITH last AS (\n  SELECT DISTINCT ON (o.user_id) o.user_id, o.order_time, i.product_id\n  FROM orders o JOIN order_items i USING (order_id)\n  ORDER BY o.user_id, o.order_time DESC, i.price DESC\n), n AS (SELECT user_id, count(*) AS orders FROM orders GROUP BY 1)\nSELECT l.user_id, c.phone_e164, c.first_name, p.product_id, n.orders\nFROM last l\nJOIN products p USING (product_id)\nJOIN n USING (user_id)\nJOIN contacts c USING (user_id)\nWHERE n.orders BETWEEN 1 AND 2\n  AND c.whatsapp_opt_in\n  AND (l.order_time AT TIME ZONE 'Asia/Kolkata')::date + p.cycle_days - 3 = (now() AT TIME ZONE 'Asia/Kolkata')::date\n  AND NOT EXISTS (SELECT 1 FROM campaign_sends s WHERE s.user_id = l.user_id AND s.campaign = 'replenishment_reminder'\n                  AND s.send_time > now() - interval '20 days');"
+      },
+      "id": "a1f0c1d2-0002-4c00-9000-000000000002",
+      "name": "Customers due in 3 days",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [240, 0],
+      "credentials": { "postgres": { "id": "", "name": "Neon (add yours)" } }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Randomise each send into treatment (80%) or holdout (20%).\n// Holdout rows are logged but never messaged: they are the counterfactual.\nreturn $input.all().map((item) => ({\n  json: { ...item.json, variant: Math.random() < 0.2 ? 'holdout' : 'treatment' },\n}));"
+      },
+      "id": "a1f0c1d2-0003-4c00-9000-000000000003",
+      "name": "Assign holdout",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "c0ffee00-0000-4000-8000-000000000001",
+              "leftValue": "={{ $json.variant }}",
+              "rightValue": "treatment",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1f0c1d2-0004-4c00-9000-000000000004",
+      "name": "Treatment?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [720, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/YOUR_PHONE_NUMBER_ID/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.phone_e164 }}\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"replenish_soon\",\n    \"language\": { \"code\": \"en\" },\n    \"components\": [{ \"type\": \"body\", \"parameters\": [\n      { \"type\": \"text\", \"text\": \"{{ $json.first_name }}\" },\n      { \"type\": \"text\", \"text\": \"{{ $json.product_id }}\" }\n    ]}]\n  }\n}",
+        "options": {}
+      },
+      "id": "a1f0c1d2-0005-4c00-9000-000000000005",
+      "name": "Send WhatsApp template",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, -100],
+      "credentials": { "httpHeaderAuth": { "id": "", "name": "WhatsApp Cloud API bearer (add yours)" } }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO campaign_sends (campaign, user_id, send_time, variant, channel, delivered, read, clicked)\nVALUES ('replenishment_reminder', '{{ $('Assign holdout').item.json.user_id }}', now(), '{{ $('Assign holdout').item.json.variant }}', 'whatsapp',\n        {{ $('Assign holdout').item.json.variant === 'treatment' }}, false, false);"
+      },
+      "id": "a1f0c1d2-0006-4c00-9000-000000000006",
+      "name": "Log send (both arms)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1200, 0],
+      "credentials": { "postgres": { "id": "", "name": "Neon (add yours)" } }
+    }
+  ],
+  "connections": {
+    "Daily 11:00 IST": { "main": [[{ "node": "Customers due in 3 days", "type": "main", "index": 0 }]] },
+    "Customers due in 3 days": { "main": [[{ "node": "Assign holdout", "type": "main", "index": 0 }]] },
+    "Assign holdout": { "main": [[{ "node": "Treatment?", "type": "main", "index": 0 }]] },
+    "Treatment?": {
+      "main": [
+        [{ "node": "Send WhatsApp template", "type": "main", "index": 0 }],
+        [{ "node": "Log send (both arms)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send WhatsApp template": { "main": [[{ "node": "Log send (both arms)", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "note": "Portfolio artifact. Not executed in this project; import into n8n 1.x, attach your own Postgres and WhatsApp Cloud API credentials, and test on your own number first." }
+}
