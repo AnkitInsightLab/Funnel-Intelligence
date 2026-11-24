@@ -48,6 +48,7 @@ const CONTRACT = `ANSWER CONTRACT (Slack mrkdwn: *bold*, bullets with •, no ta
 *Recommended action:* one action, its expected impact (with the number behind it) and how to measure it.
 *Caveat:* one honest limit (synthetic data, sample size, definition chosen, correlation vs causation).
 Keep it under 220 words. Every number must come from a query result in this conversation; never invent one.
+Write rupees in Indian style: ₹14.6 L or ₹1.46 Cr for large amounts, ₹2,264 for small ones. Copy digits exactly from the result; never re-type or re-group them by hand.
 If the data cannot answer (e.g. regions, distributors, margins, ad spend are not in the schema), say so plainly and say what data would be needed. Do not guess.
 Decline anything unrelated to this business data.`;
 

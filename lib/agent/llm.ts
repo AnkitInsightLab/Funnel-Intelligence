@@ -86,7 +86,20 @@ async function claude(system: string, messages: Message[], tools: Tool[], maxTok
   return { content: j.content, stop_reason: j.stop_reason === 'tool_use' ? 'tool_use' : 'end_turn' };
 }
 
-export function chat(system: string, messages: Message[], tools: Tool[] = [], maxTokens = 1500): Promise<Turn> {
+// Thinking models count their reasoning against the output limit, so a hard question can
+// end with an empty reply (finishReason MAX_TOKENS). Retry once with double the budget,
+// and once after a short pause on temporary server errors (5xx, overloaded).
+const transient = (e: unknown) => e instanceof LlmError && (e.status >= 500 || e.status === 0);
+const outOfTokens = (e: unknown) => e instanceof LlmError && /MAX_TOKENS|empty/i.test(e.message);
+
+export async function chat(system: string, messages: Message[], tools: Tool[] = [], maxTokens = 8192): Promise<Turn> {
   if (!KEY) throw new LlmError(503, 'no_llm_key');
-  return GEMINI ? gemini(system, messages, tools, maxTokens) : claude(system, messages, tools, maxTokens);
+  const call = (n: number) => (GEMINI ? gemini(system, messages, tools, n) : claude(system, messages, tools, n));
+  try {
+    return await call(maxTokens);
+  } catch (e) {
+    if (outOfTokens(e)) return call(Math.min(maxTokens * 2, 32768));
+    if (transient(e)) { await new Promise((r) => setTimeout(r, 1500)); return call(maxTokens); }
+    throw e;
+  }
 }

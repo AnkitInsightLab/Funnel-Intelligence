@@ -18,7 +18,7 @@ export const agentStatus = () => ({ llm: llmConfigured(), db: dbConfigured(), pr
 
 async function route(question: string): Promise<{ agent: AgentKey | 'out_of_scope'; reason: string }> {
   try {
-    const t = await chat(ROUTER_SYSTEM, [{ role: 'user', content: question }], [], 120);
+    const t = await chat(ROUTER_SYSTEM, [{ role: 'user', content: question }], [], 1024);
     const text = t.content.filter((b) => b.type === 'text').map((b) => (b as { text: string }).text).join('');
     const m = text.match(/\{[\s\S]*\}/);
     const j = m ? JSON.parse(m[0]) : null;
@@ -86,7 +86,8 @@ export async function ask(question: string, opts: { forceAgent?: AgentKey } = {}
   } catch (e) {
     const status = e instanceof LlmError ? e.status : 0;
     return { ok: false, agent, agentName: AGENT_META[agent].name, reason, answer: '', queries, proposal, provider: PROVIDER, model: MODEL, ms: Date.now() - t0,
-      error: status === 429 ? 'The AI service is rate-limited. Try again in a minute.' : 'The AI service returned an error.' };
+      error: status === 429 ? 'The AI service is rate-limited. Try again in a minute.'
+        : `The AI service returned an error (${status || 'network'}: ${e instanceof Error ? e.message.slice(0, 80) : 'unknown'}). Try again; if it repeats, check the model key and AGENT_MODEL.` };
   }
   return { ok: true, agent, agentName: AGENT_META[agent].name, reason, answer, queries, proposal, provider: PROVIDER, model: MODEL, ms: Date.now() - t0 };
 }
